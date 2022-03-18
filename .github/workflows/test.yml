@@ -1,7 +1,7 @@
 name: Widget Jones Test
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
 
 jobs:
   build:
