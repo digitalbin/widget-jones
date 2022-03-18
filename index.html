@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>widget jones</title>
+        <style>
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            button {
+                padding: 1rem 2rem;
+                border: 1px solid #333;
+                background-color: #fff;
+                font-size: 1.5rem;
+                font-weight: 700;
+                border-radius: 2px;
+                box-shadow: 4px 4px 0 #333;
+            }
+        </style>
+    </head>
+    <body>
+        <button>DEPLOY</button>
+        <script>
+            const btn = document.querySelector('button');
+            function getParams(...args) {
+                const url = new URL(window.location.href);
+                return args.map(p => url.searchParams.get(p));
+            }
+            function handleClick() {
+                const [token, repo, user] = getParams('token', 'repo', 'user');
+                console.log({ token,repo,user });
+            }
+            btn.addEventListener('click', handleClick);
+        </script>
+    </body>
+</html>
