@@ -20,6 +20,16 @@
                 font-weight: 700;
                 border-radius: 2px;
                 box-shadow: 4px 4px 0 #333;
+                transition: background-color 0.2s linear;
+            }
+            button.success {
+                background-color: #69db7c;
+            }
+            button.error {
+                background-color: #ff8787;
+            }
+            button.loading {
+                background-color: #ced4da;
             }
         </style>
     </head>
@@ -29,11 +39,31 @@
             const btn = document.querySelector('button');
             function getParams(...args) {
                 const url = new URL(window.location.href);
-                return args.map(p => url.searchParams.get(p));
+                return args.map((p) => url.searchParams.get(p) || undefined);
             }
             function handleClick() {
-                const [token, repo, user] = getParams('token', 'repo', 'user');
-                console.log({ token,repo,user });
+                btn.setAttribute('disabled', true);
+                btn.classList.add('loading');
+                const [token, repo, user, event_type = 'widget jones'] =
+                    getParams('token', 'repo', 'user', 'event_type');
+                const url = `https://api.github.com/repos/${user}/${repo}/dispatches`;
+                const opts = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        event_type,
+                    }),
+                };
+                fetch(url, opts)
+                    .then((res) => {
+                        if (!res.ok) btn.classList.replace('loading', 'error');
+                        else btn.classList.replace('loading', 'success');
+                        return;
+                    })
+                    .finally(() => btn.removeAttribute('disabled'));
             }
             btn.addEventListener('click', handleClick);
         </script>
